@@ -1,0 +1,12 @@
+{
+ "name": "motion",
+ "version": "1.0.0",
+ "description": "Custom Notion Web Application built in Typescript",
+ "main": "index.js",
+ "repository": "https://github.com/joyact/motion",
+ "author": "Joy Lee <joylee.dev@gmail.com>",
+ "license": "MIT",
+ "dependencies": {
+  "typescript": "^4.2.3"
+ }
+}
