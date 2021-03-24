@@ -1,3 +1,5 @@
+@import './reset.css';
+
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;900&display=swap');
 
 body {
@@ -7,10 +9,15 @@ body {
   overflow: hidden;
   font-size: 1.25rem;
   font-family: 'Noto Serif KR', serif;
+  background: url('../images/background.jpg') center/cover no-repeat;
 }
 
 .app {
   width: 100%;
+  max-width: 1000px;
+  background: rgba(255, 255, 255, 0.35);
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
@@ -19,8 +26,42 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  border-bottom: 1px solid #666;
+  padding: 20px 0;
+}
+
+.header__title {
+  font-size: 4rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  opacity: 0.7;
+}
+
+.header__btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header__btns .btn {
+  padding: 10px;
+  font-size: 1.4rem;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.document {
+  height: 100%;
+  overflow-y: auto;
 }
 
 .footer {
   text-align: center;
+  padding: 30px 0;
+  border-top: 1px solid #666;
+}
+
+.footer__copyright {
+  font-size: 1rem;
 }
