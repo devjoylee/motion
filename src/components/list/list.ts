@@ -1,12 +1,7 @@
-export class ListComponent {
-  private element: HTMLUListElement;
-  constructor() {
-    this.element = document.createElement('ul');
-    this.element.setAttribute('class', 'list');
-    this.element.textContent = 'This is List Component';
-  }
+import { BaseComponent } from '../component.js';
 
-  attachTo(parent: HTMLElement, position: InsertPosition = 'afterbegin') {
-    parent.insertAdjacentElement(position, this.element);
+export class List extends BaseComponent<HTMLDivElement> {
+  constructor() {
+    super(`<div class="list"></div>`);
   }
 }
