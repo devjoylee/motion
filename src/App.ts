@@ -12,12 +12,10 @@ class App {
       'Image',
       'https://i.ytimg.com/vi/XplrxSSrja0/maxresdefault.jpg'
     );
-    image.attachTo(appRoot);
-    console.log(image);
+    this.list.addChild(image);
 
     const note = new NoteComponent('Note Title', 'hello');
-    note.attachTo(appRoot);
-    console.log(note);
+    this.list.addChild(note);
   }
 }
 

@@ -1,8 +1,12 @@
+export interface Component {
+  attachTo(parent: HTMLElement, position?: InsertPosition): void;
+}
+
 /**
  * Encapsulate the HTML element creation
  */
 
-export class BaseComponent<T extends HTMLElement> {
+export class BaseComponent<T extends HTMLElement> implements Component {
   protected readonly element: T; // only child element can read
   constructor(htmlString: string) {
     const template = document.createElement('template');
