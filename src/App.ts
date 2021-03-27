@@ -6,48 +6,59 @@ import { TextSectionInput } from './components/dialog/input/text-input.js';
 import { MediaSectionInput } from './components/dialog/input/media-input.js';
 import { Component } from './components/component.js';
 
+// MediaSectionInput 혹은 TextSectionInput 을 만드는 타입
+type InputComponentConstructor<T = MediaSectionInput | TextSectionInput> = {
+  new (): T;
+};
+
 class App {
   // list => Component 이면서 Composable(addChild)이 가능한 요소
   private readonly list: Component & Composable;
-  constructor(appRoot: HTMLElement, dialogRoot: HTMLElement) {
+  constructor(appRoot: HTMLElement, private dialogRoot: HTMLElement) {
     this.list = new List(ListItem); // List 클래스 생성 시, ListItem을 추가할 것을 전달
     this.list.attachTo(appRoot);
 
-    const noteBtn = document.querySelector('#new-note')! as HTMLButtonElement;
-    noteBtn.addEventListener('click', () => {
+    // Create Note Section
+    this.bindElementToDialog<TextSectionInput>(
+      '#new-note',
+      TextSectionInput,
+      (input: TextSectionInput) => new NoteComponent(input.title, input.body)
+    );
+
+    // Create Image Section
+    this.bindElementToDialog<MediaSectionInput>(
+      '#new-img',
+      MediaSectionInput,
+      (input: MediaSectionInput) => new ImageComponent(input.title, input.url)
+    );
+  }
+
+  // 반복적으로 쓰이는 코드는 함수로 작성해두고 재사용 한다
+  private bindElementToDialog<T extends MediaSectionInput | TextSectionInput>(
+    // 1. 추가할 섹션 버튼의 id
+    selector: string,
+    // 2. 어떤 컴포넌트를 만들지 (input 컴포넌트 타입)
+    InputComponent: InputComponentConstructor<T>,
+    // 3. 전달 받은 input으로 필요한 컴포넌트 생성
+    makeSection: (input: T) => Component
+  ) {
+    const addButton = document.querySelector(selector)! as HTMLButtonElement; // 1
+    addButton.addEventListener('click', () => {
       const dialog = new Dialog();
-      const textSection = new TextSectionInput();
-      dialog.addChild(textSection); // dialog에 input 섹션 추가
-      dialog.attachTo(dialogRoot); // 완성된 dialog를 body에 추가
+      const input = new InputComponent(); // 2
+      dialog.addChild(input); // dialog에 input 섹션 추가
+      dialog.attachTo(this.dialogRoot); // 완성된 dialog를 body에 추가
 
       dialog.setOnCloseListener(() => {
-        dialog.removeFrom(dialogRoot);
+        dialog.removeFrom(this.dialogRoot);
       });
 
       dialog.setOnSubmitListener(() => {
         // 👉 submit 버튼 클릭 : getter 호출
         // 👉 사용자가 textSection에 입력한 정보를 getter로 가져와서, NoteComponent로 전달한다
-        const note = new NoteComponent(textSection.title, textSection.body);
-        this.list.addChild(note);
-        dialog.removeFrom(dialogRoot);
-      });
-    });
-
-    const imageBtn = document.querySelector('#new-img')! as HTMLButtonElement;
-    imageBtn.addEventListener('click', () => {
-      const dialog = new Dialog();
-      const mediaSection = new MediaSectionInput();
-      dialog.addChild(mediaSection);
-      dialog.attachTo(dialogRoot);
-
-      dialog.setOnCloseListener(() => {
-        dialog.removeFrom(dialogRoot);
-      });
-
-      dialog.setOnSubmitListener(() => {
-        const image = new ImageComponent(mediaSection.title, mediaSection.url);
-        this.list.addChild(image);
-        dialog.removeFrom(dialogRoot);
+        const item = makeSection(input); // 3
+        this.list.addChild(item);
+        dialog.removeFrom(this.dialogRoot);
       });
     });
   }
