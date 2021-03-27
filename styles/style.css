@@ -130,7 +130,42 @@ body {
 }
 
 .dialog .dialog__body {
+  width: 100%;
+  height: 100%;
+}
+
+.input-form {
+  padding: 0 30px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-form .form__container {
+  margin-bottom: 20px;
+  display: flex;
+}
+
+.input-form .form__container:last-child {
   flex: 1;
+}
+
+.input-form label + input {
+  border-bottom: 1px solid #aaa;
+  padding: 0 15px 10px;
+  font-size: 16px;
+  font-family: 'Noto Serif KR', serif;
+  flex: 1;
+}
+
+.input-form label + textarea {
+  outline: none;
+  border: 1px solid #aaa;
+  flex: 1;
+}
+
+.input-form label {
+  margin-right: 10px;
 }
 
 .dialog .close {

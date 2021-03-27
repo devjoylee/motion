@@ -1,4 +1,4 @@
-import { BaseComponent } from '../component.js';
+import { BaseComponent, Component } from '../component.js';
 
 type OnCloseListener = () => void;
 type OnSubmitListener = () => void;
@@ -43,5 +43,12 @@ export class Dialog extends BaseComponent<HTMLElement> {
 
   setOnSubmitListener(listener: OnSubmitListener) {
     this.submitListener = listener;
+  }
+
+  addChild(child: Component) {
+    const container = this.element.querySelector(
+      '.dialog__body'
+    )! as HTMLElement;
+    child.attachTo(container);
   }
 }
