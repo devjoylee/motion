@@ -1,14 +1,16 @@
-import { List } from './components/list/list.js';
+import { Composable, List, ListItem } from './components/list/list.js';
 import { ImageComponent } from './components/list/item/image.js';
 import { NoteComponent } from './components/list/item/note.js';
 import { Dialog } from './components/dialog/dialog.js';
 import { TextSectionInput } from './components/dialog/input/text-input.js';
 import { MediaSectionInput } from './components/dialog/input/media-input.js';
+import { Component } from './components/component.js';
 
 class App {
-  private readonly list: List;
+  // list => Component 이면서 Composable(addChild)이 가능한 요소
+  private readonly list: Component & Composable;
   constructor(appRoot: HTMLElement, dialogRoot: HTMLElement) {
-    this.list = new List();
+    this.list = new List(ListItem); // List 클래스 생성 시, ListItem을 추가할 것을 전달
     this.list.attachTo(appRoot);
 
     const noteBtn = document.querySelector('#new-note')! as HTMLButtonElement;
