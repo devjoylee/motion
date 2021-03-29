@@ -1,6 +1,7 @@
 import { Composable, List, ListItem } from './components/list/list.js';
 import { ImageComponent } from './components/list/item/image.js';
 import { NoteComponent } from './components/list/item/note.js';
+import { VideoComponent } from './components/list/item/video.js';
 import { Dialog } from './components/dialog/dialog.js';
 import { TextSectionInput } from './components/dialog/input/text-input.js';
 import { MediaSectionInput } from './components/dialog/input/media-input.js';
@@ -30,6 +31,13 @@ class App {
       '#new-img',
       MediaSectionInput,
       (input: MediaSectionInput) => new ImageComponent(input.title, input.url)
+    );
+
+    // Create Video Section
+    this.bindElementToDialog<MediaSectionInput>(
+      '#new-video',
+      MediaSectionInput,
+      (input: MediaSectionInput) => new VideoComponent(input.title, input.url)
     );
   }
 
