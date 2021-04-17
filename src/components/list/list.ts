@@ -25,7 +25,7 @@ export class ListItem
   private closeListener?: OnCloseListener; // 외부에서 전달받은 콜백함수
   constructor() {
     super(`
-      <section class="list-item">
+      <section class="list-item" draggable="true">
         <div class="list-item__body"></div>
         <div class="list-item__controls">
           <button class="close">&times;</button>
@@ -37,6 +37,13 @@ export class ListItem
     closeBtn.onclick = () => {
       this.closeListener && this.closeListener(); // 클릭 시 콜백함수 실행
     };
+
+    this.element.addEventListener('dragstart', (event: DragEvent) => {
+      this.onDragStart(event);
+    });
+    this.element.addEventListener('dragend', (event: DragEvent) => {
+      this.onDragEnd(event);
+    });
   }
 
   // 전달받은 item을 html에 추가
@@ -51,12 +58,27 @@ export class ListItem
   setOnCloseListener(listener: OnCloseListener) {
     this.closeListener = listener;
   }
+
+  onDragStart(event: DragEvent) {
+    console.log('dragstart', event);
+  }
+
+  onDragEnd(event: DragEvent) {
+    console.log('dragend', event);
+  }
 }
 
 export class List extends BaseComponent<HTMLDivElement> implements Composable {
   // 데이터(SectionContainerConstructor)를 외부로 부터 받아서, new 클래스 생성
   constructor(private listItemConstructor: SectionContainerConstructor) {
     super(`<div class="list"></div>`);
+
+    this.element.addEventListener('dragover', (event: DragEvent) => {
+      this.onDragOver(event);
+    });
+    this.element.addEventListener('drop', (event: DragEvent) => {
+      this.onDrop(event);
+    });
   }
 
   addChild(section: Component) {
@@ -70,5 +92,15 @@ export class List extends BaseComponent<HTMLDivElement> implements Composable {
       // close버튼 클릭 시 실행할 콜백함수 정의
       item.removeFrom(this.element);
     });
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    console.log('onDragOver');
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    console.log('onDrop');
   }
 }

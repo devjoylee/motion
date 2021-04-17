@@ -12,7 +12,7 @@ export class ImageComponent extends BaseComponent<HTMLElement> {
     `);
 
     const titleElement = this.element.querySelector(
-      '.image .media__title'
+      '.image   .media__title'
     )! as HTMLHeadingElement;
     titleElement.textContent = title;
 

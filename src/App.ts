@@ -19,6 +19,15 @@ class App {
     this.list = new List(ListItem); // List 클래스 생성 시, ListItem을 추가할 것을 전달
     this.list.attachTo(appRoot);
 
+    // 데모 코드
+    this.list.addChild(
+      new ImageComponent('Image Title', 'https://picsum.photos/800/400')
+    );
+
+    this.list.addChild(
+      new NoteComponent('Note Title', "Don't forget to code your dream")
+    );
+
     // Create Note Section
     this.bindElementToDialog<TextSectionInput>(
       '#new-note',
