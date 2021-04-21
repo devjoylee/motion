@@ -1,6 +1,7 @@
 export interface Component {
-  attachTo(parent: HTMLElement, position?: InsertPosition): void;
-  removeFrom(parent: HTMLElement): void;
+  attachTo(parent: HTMLElement, position?: InsertPosition): void; // 요소를 부모에 추가
+  removeFrom(parent: HTMLElement): void; // 부모로부터 요소를 제거
+  attach(component: Component, position?: InsertPosition): void; // 형제 요소 앞에 붙이기
 }
 
 /**
@@ -21,5 +22,9 @@ export class BaseComponent<T extends HTMLElement> implements Component {
 
   removeFrom(parent: HTMLElement) {
     parent.removeChild(this.element);
+  }
+
+  attach(component: Component, position?: InsertPosition) {
+    component.attachTo(this.element, position);
   }
 }

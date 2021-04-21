@@ -101,6 +101,9 @@ export class ListItem
 }
 
 export class List extends BaseComponent<HTMLDivElement> implements Composable {
+  private dragTarget?: SectionContainer;
+  private dropTarget?: SectionContainer;
+
   // 데이터(SectionContainerConstructor)를 외부로 부터 받아서, new 클래스 생성
   constructor(private listItemConstructor: SectionContainerConstructor) {
     super(`<div class="list"></div>`);
@@ -126,7 +129,23 @@ export class List extends BaseComponent<HTMLDivElement> implements Composable {
     });
     item.setOnDragStateListener(
       (target: SectionContainer, state: DragState) => {
-        console.log(target, state);
+        // 드래그 상태가 변화되면 실행
+        switch (state) {
+          case 'start':
+            this.dragTarget = target;
+            break;
+          case 'end':
+            this.dragTarget = undefined;
+            break;
+          case 'enter':
+            this.dropTarget = target;
+            break;
+          case 'leave':
+            this.dropTarget = undefined;
+            break;
+          default:
+            throw new Error(`unsupported state: ${state}`);
+        }
       }
     );
   }
@@ -139,5 +158,14 @@ export class List extends BaseComponent<HTMLDivElement> implements Composable {
   onDrop(event: DragEvent) {
     event.preventDefault();
     console.log('onDrop');
+    // 여기에서 위치를 변경
+    if (!this.dropTarget) {
+      // drop target이 없으면 리턴
+      return;
+    }
+    if (this.dragTarget && this.dragTarget !== this.dropTarget) {
+      this.dragTarget.removeFrom(this.element); // 드래그 타겟 리스트에서 삭제
+      this.dropTarget.attach(this.dragTarget, 'beforebegin'); // 드롭 타겟 위에 드래그 타켓 추가
+    }
   }
 }
