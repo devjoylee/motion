@@ -27,6 +27,13 @@ class App {
     this.list.addChild(
       new NoteComponent('Note Title', "Don't forget to code your dream")
     );
+    this.list.addChild(
+      new ImageComponent('Image Title', 'https://picsum.photos/800/400')
+    );
+
+    this.list.addChild(
+      new NoteComponent('Note Title', "Don't forget to code your dream")
+    );
 
     // Create Note Section
     this.bindElementToDialog<TextSectionInput>(

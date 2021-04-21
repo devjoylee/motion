@@ -16,6 +16,8 @@ type OnDragStateListener<T extends Component> = (
 interface SectionContainer extends Component, Composable {
   setOnCloseListener(listener: OnCloseListener): void;
   setOnDragStateListener(listener: OnDragStateListener<SectionContainer>): void;
+  muteChildren(state: 'mute' | 'unmute'): void;
+  getBountdingRect(): DOMRect;
 }
 
 // 생성자를 정의하는 타입
@@ -98,9 +100,23 @@ export class ListItem
   notifyDragObservers(state: DragState) {
     this.dragStateListener && this.dragStateListener(this, state);
   }
+
+  // 드래그 이벤트 발생 중에는 자식 요소의 pointer이벤트 없애기 (->에러 최소화)
+  muteChildren(state: 'mute' | 'unmute') {
+    if (state === 'mute') {
+      this.element.classList.add('mute-children');
+    } else {
+      this.element.classList.remove('mute-children');
+    }
+  }
+
+  getBountdingRect(): DOMRect {
+    return this.element.getBoundingClientRect();
+  }
 }
 
 export class List extends BaseComponent<HTMLDivElement> implements Composable {
+  private children = new Set<SectionContainer>(); // 중복된 자료구조 x
   private dragTarget?: SectionContainer;
   private dropTarget?: SectionContainer;
 
@@ -126,21 +142,27 @@ export class List extends BaseComponent<HTMLDivElement> implements Composable {
     item.setOnCloseListener(() => {
       // close버튼 클릭 시 실행할 콜백함수 정의
       item.removeFrom(this.element);
+      this.children.delete(item);
     });
+    this.children.add(item);
     item.setOnDragStateListener(
       (target: SectionContainer, state: DragState) => {
         // 드래그 상태가 변화되면 실행
         switch (state) {
           case 'start':
             this.dragTarget = target;
+            this.updateSections('mute');
             break;
           case 'end':
             this.dragTarget = undefined;
+            this.updateSections('unmute');
             break;
           case 'enter':
+            console.log('enter', target);
             this.dropTarget = target;
             break;
           case 'leave':
+            console.log('leave', target);
             this.dropTarget = undefined;
             break;
           default:
@@ -164,8 +186,22 @@ export class List extends BaseComponent<HTMLDivElement> implements Composable {
       return;
     }
     if (this.dragTarget && this.dragTarget !== this.dropTarget) {
-      this.dragTarget.removeFrom(this.element); // 드래그 타겟 리스트에서 삭제
-      this.dropTarget.attach(this.dragTarget, 'beforebegin'); // 드롭 타겟 위에 드래그 타켓 추가
+      const dropY = event.clientY; // 드롭되는 위치
+      const srcElement = this.dragTarget.getBountdingRect(); // 드래그 시작 위치
+
+      this.dragTarget.removeFrom(this.element); // 드래그 타겟 원래 위치에서 삭제
+      this.dropTarget.attach(
+        this.dragTarget,
+        dropY < srcElement.y ? 'beforebegin' : 'afterend'
+        // 위에서 아래로 드래그 시 (dropY < srcElement) 드롭타겟 뒤에 위치
+        // 아래에서 위로 드래그 시 (dropY > srcElement) 드롭타겟 앞에 위치
+      );
     }
+  }
+
+  private updateSections(state: 'mute' | 'unmute') {
+    this.children.forEach((section: SectionContainer) => {
+      section.muteChildren(state);
+    });
   }
 }
