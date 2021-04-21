@@ -14,7 +14,7 @@ export class Dialog extends BaseComponent<HTMLElement> {
         <div class="dialog__container">
           <button class="close">&times;</button>
           <div class="dialog__body"></div>
-          <button class="submit">ADD</button>
+          <button class="submit btn">ADD</button>
         </div>
       </div>
     `);
