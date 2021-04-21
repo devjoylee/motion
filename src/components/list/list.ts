@@ -138,7 +138,7 @@ export class List extends BaseComponent<HTMLDivElement> implements Composable {
 
     const item = new this.listItemConstructor();
     item.addChild(section);
-    item.attachTo(this.element, 'beforeend');
+    item.attachTo(this.element, 'afterbegin'); // 새 리스트 추가 시 가장 위에 위치
     item.setOnCloseListener(() => {
       // close버튼 클릭 시 실행할 콜백함수 정의
       item.removeFrom(this.element);

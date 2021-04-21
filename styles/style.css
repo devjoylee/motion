@@ -16,7 +16,7 @@
   --smokywhite: #dddbd8;
   --black: #000000;
   --translucent-black: #00000099;
-  --main-font: 'Quicksand', Roboto, sans-serif;
+  --main-font: Roboto, sans-serif;
 }
 
 p {
@@ -51,7 +51,7 @@ body {
 .header__title {
   font-size: 45px;
   font-weight: bold;
-  letter-spacing: 5px;
+  letter-spacing: 1px;
   margin-bottom: 15px;
   color: var(--accent-color);
 }
@@ -69,7 +69,7 @@ body {
   padding: 1em 3em;
   text-transform: uppercase;
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: white;
   background-color: var(--accent-color);
   border-color: var(--accent-color);
@@ -118,6 +118,7 @@ body {
 
 .list-item__body {
   padding: 20px;
+  width: 100%;
 }
 
 .list-item__controls {

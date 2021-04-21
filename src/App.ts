@@ -21,18 +21,21 @@ class App {
 
     // 데모 코드
     this.list.addChild(
-      new ImageComponent('Image Title', 'https://picsum.photos/800/400')
+      new ImageComponent('랜덤이미지', 'https://picsum.photos/800/400')
     );
 
     this.list.addChild(
-      new NoteComponent('Note Title', "Don't forget to code your dream")
-    );
-    this.list.addChild(
-      new ImageComponent('Image Title', 'https://picsum.photos/800/400')
+      new VideoComponent(
+        '추천 플레이리스트',
+        'https://www.youtube.com/watch?v=NRI1rgeRNe0'
+      )
     );
 
     this.list.addChild(
-      new NoteComponent('Note Title', "Don't forget to code your dream")
+      new NoteComponent(
+        'Motion 노트 앱입니다',
+        '위 버튼을 눌러 더 많은 노트를 추가한 후 드래그하여 원하는 위치로 배치해보세요 😊'
+      )
     );
 
     // Create Note Section
