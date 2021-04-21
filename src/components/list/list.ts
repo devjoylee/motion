@@ -6,10 +6,16 @@ export interface Composable {
 }
 
 type OnCloseListener = () => void;
+type DragState = 'start' | 'end' | 'enter' | 'leave'; // 드래그 시 발생하는 이벤트
+type OnDragStateListener<T extends Component> = (
+  target: T,
+  state: DragState
+) => void;
 
 // SectionContainer 는 무조건 Component와 Composable를 구현하고 setOnCloseListener API를 가진다
 interface SectionContainer extends Component, Composable {
   setOnCloseListener(listener: OnCloseListener): void;
+  setOnDragStateListener(listener: OnDragStateListener<SectionContainer>): void;
 }
 
 // 생성자를 정의하는 타입
@@ -23,6 +29,8 @@ export class ListItem
   extends BaseComponent<HTMLElement>
   implements SectionContainer {
   private closeListener?: OnCloseListener; // 외부에서 전달받은 콜백함수
+  private dragStateListener?: OnDragStateListener<ListItem>;
+
   constructor() {
     super(`
       <section class="list-item" draggable="true">
@@ -44,6 +52,12 @@ export class ListItem
     this.element.addEventListener('dragend', (event: DragEvent) => {
       this.onDragEnd(event);
     });
+    this.element.addEventListener('dragenter', (event: DragEvent) => {
+      this.onDragEnter(event);
+    });
+    this.element.addEventListener('dragleave', (event: DragEvent) => {
+      this.onDragLeave(event);
+    });
   }
 
   // 전달받은 item을 html에 추가
@@ -59,12 +73,30 @@ export class ListItem
     this.closeListener = listener;
   }
 
-  onDragStart(event: DragEvent) {
-    console.log('dragstart', event);
+  // 드래그 이벤트 발생할 때마다 리스너 호출
+  setOnDragStateListener(listener: OnDragStateListener<ListItem>) {
+    this.dragStateListener = listener;
   }
 
-  onDragEnd(event: DragEvent) {
-    console.log('dragend', event);
+  onDragStart(_: DragEvent) {
+    this.notifyDragObservers('start');
+  }
+
+  onDragEnd(_: DragEvent) {
+    this.notifyDragObservers('end');
+  }
+
+  onDragEnter(_: DragEvent) {
+    this.notifyDragObservers('enter');
+  }
+
+  onDragLeave(_: DragEvent) {
+    this.notifyDragObservers('leave');
+  }
+
+  // 드래그 되는 요소가 무엇인지, 어떤 상태로 드래그 되는지 알려줌
+  notifyDragObservers(state: DragState) {
+    this.dragStateListener && this.dragStateListener(this, state);
   }
 }
 
@@ -92,6 +124,11 @@ export class List extends BaseComponent<HTMLDivElement> implements Composable {
       // close버튼 클릭 시 실행할 콜백함수 정의
       item.removeFrom(this.element);
     });
+    item.setOnDragStateListener(
+      (target: SectionContainer, state: DragState) => {
+        console.log(target, state);
+      }
+    );
   }
 
   onDragOver(event: DragEvent) {
